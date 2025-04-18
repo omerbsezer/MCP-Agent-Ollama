@@ -1,0 +1,3 @@
+praisonaiagents==0.0.73
+ollama==0.4.7
+regex 
