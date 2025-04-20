@@ -1,13 +1,4 @@
 # MCP Ollama Agent
-
-## Why this Repo?
-- **No need MCP client tool** app, **No need using Remote LLM APIs** (OpenAI, Claude, Bedrock), Use **Local PC LLM models** instead of LLM APIs.
-- MCP servers are normally connected to MCP Client tools (Claude, Cursor, Windsurf, VSCode). This repo doesn't have any MCP Client. 
-- Instead of MCP client tool, this repo shows to connect MCP tools to Agent directly.
-- Agent can automatically uses MCP tools, it speeds up automation and agent can use MCP tools independently.
-
-
-## What is This Repo: MCP Ollama Agent?
 - App runs GUI using Streamlit.
 - To connect each MCP tools, agents are implemented for each tool. 
 - PraisonAI library is used to run agent, MCP and Ollama together.
@@ -33,11 +24,11 @@
 - While running the model on GPU, model size covers ~1.5x size on the VRAM. Llama3.1:8b is normally 4.9GB, but while running, it takes 6.9GB.    
 
 ## Run
-- Install node, npm, npx on your PC. 
+- Install node, npm, npx on your PC to run MCP server app on your local pc. 
+- pip install -r requirements.txt
 - python -m streamlit run app.py
 
 ## MCP & Examples
-- MCP JSON response is important. If the response doesn't contain right information, agent will return that information.
 - MCP Server is an adapter layer between the remote API and agent. If any change on the remote API, MCP server cannot give correct information.
 - You can check whether MCP works correctly or not from Smithery (https://smithery.ai/)
   - For example, testing Airbnb MCP server using smithery: https://smithery.ai/server/@openbnb-org/mcp-server-airbnb/tools 
@@ -49,12 +40,37 @@ I want to book apartment using Airbnb. I will stay in Paris between 20.05.2025-3
 I want to search "how to learn LLM" on Google using Serper
 
 ### Tavily Sample Prompt
-I want to search "how to learn LLM" using Tavily
+I want to search "what is MCP?" using Tavily
 
 ### Youtube Sample Prompt
-I want to search "how to learn LLM" using Tavily
+Transcribe this video => https://www.youtube.com/watch?v=eur8dUO9mvE
 
 ## Demo
+### Serper (Google) Demo
+- **Prompt:** I want to search "how to learn LLM" on Google using Serper
+  - **PrintScreen**:
+    ![serper-ask-ps](https://github.com/omerbsezer/MCP-Agent-Ollama/blob/main/gif/serper-ask.png)  
 
+  - **GIF**: 
+    ![serper-ask-gif](https://github.com/omerbsezer/MCP-Agent-Ollama/blob/main/gif/serper-ask.gif)  
 
+### Tavily Demo
+- **Prompt:** I want to search "what is MCP?" using Tavily
+  - **PrintScreen**:
+    ![tavily-ask-ps](https://github.com/omerbsezer/MCP-Agent-Ollama/blob/main/gif/tavily-ask.png)  
 
+  - **GIF**: 
+    ![tavily-ask-gif](https://github.com/omerbsezer/MCP-Agent-Ollama/blob/main/gif/tavily-ask.gif)  
+
+### Youtube Demo (Error)
+- **Prompt:** Transcribe this video => https://www.youtube.com/watch?v=eur8dUO9mvE
+  - **GIF**: 
+    ![youtube-mcp-gif](https://github.com/omerbsezer/MCP-Agent-Ollama/blob/main/gif/youtube-mcp-error.gif)  
+
+## Analysis & Future Work
+- When a prompt is sent, the LLM model determines which MCP tools to use (e.g., tavily_search, tavily_extract) and calls them accordingly. The agent’s instruction or system prompt plays a crucial role in guiding this decision.
+- After receiving a JSON response from the MCP server, the LLM and agent sometimes fail to correctly interpret or utilize the response. Enhancing the agent’s instruction/system prompt can help guide the model to use the MCP response more effectively.
+- LLM behavior is often non-deterministic which can lead to varying results — sometimes good, sometimes incomplete or inaccurate.
+- Occasionally, the MCP server returns errors (e.g., rate limits, API failures). If the MCP server isn’t functioning properly, check the JSON response for error messages. You can also use tools like Smithery (https://smithery.ai/) to verify whether MCP is working correctly.
+- Running the LLM on a GPU instead of a CPU allows you to use more powerful models and obtain faster, more accurate responses.
+- Testing remote MCP servers with different libraries (e.g., Google ADK, LangChain, PydanticAI) is also recommended to ensure broader compatibility and performance insights.

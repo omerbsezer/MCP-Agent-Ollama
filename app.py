@@ -3,7 +3,7 @@ from agents import route_query
 import multiprocessing
 
 def main():
-    st.title("AI Agent Router")
+    st.title("MCP Ollama Agent App")
     if "messages" not in st.session_state:
         st.session_state.messages = []
 

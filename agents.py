@@ -16,46 +16,36 @@ LLM_MODEL="ollama/llama3.2:1b"
 # LLM_MODEL="ollama/llama3.1:8b"
 # LLM_MODEL="ollama/gemma3:1b"
 # LLM_MODEL="ollama/gemma3:4b"
-# LLM_MODEL="ollama/gemma3:12b"
-# LLM_MODEL="ollama/gemma3:27b"
 # LLM_MODEL="ollama/deepseek-r1:8b"
-# LLM_MODEL="ollama/deepseek-r1:14b"
-# LLM_MODEL="ollama/deepseek-r1:32b"
-# LLM_MODEL="ollama/qwen2.5:3b"
-# LLM_MODEL="ollama/qwen2.5:7b"
-# LLM_MODEL="ollama/qwen2.5:14b"
-# LLM_MODEL="ollama/qwen2.5:32b"
-# LLM_MODEL="ollama/qwq:32b"
 
-# def initialize_airbnb_agent():
-#     return Agent(
-#         # instructions="""You are a travel planning assistant that specializes in finding Airbnb listings and retrieving detailed information about specific properties. 
-#         # Your goal is to help users effortlessly plan their trips by providing relevant and structured data—without requiring an API key.
+def initialize_airbnb_agent():
+    return Agent(
+        # instructions="""You are a travel planning assistant that specializes in finding Airbnb listings and retrieving detailed information about specific properties. 
+        # Your goal is to help users effortlessly plan their trips by providing relevant and structured data—without requiring an API key.
 
-#         # You can:
-#         # - Use **airbnb_search** to find Airbnb listings based on filters like location, price range, and number of guests. Always include direct links to the listings.
-#         # - Use **airbnb_listing_details** to get comprehensive details about a specific property, including pricing, amenities, reviews, and availability. Always include direct links to the listings.
+        # You can:
+        # - Use **airbnb_search** to find Airbnb listings based on filters like location, price range, and number of guests. Always include direct links to the listings.
+        # - Use **airbnb_listing_details** to get comprehensive details about a specific property, including pricing, amenities, reviews, and availability. Always include direct links to the listings.
 
-#         # Use the tools wisely to assist users in making informed travel decisions while respecting Airbnb’s guidelines.
-#         # """,
-#         instructions="""You are a research assistant specializing in Airbnb data analysis. Your role is to process MCP responses and provide structured, actionable insights. Follow these steps:
-#         1. For **airbnb_search** results:
-#         - Use 'searchUrl' as the base for all listing links.
-#         - Extract pricing details from 'structuredDisplayPrice':
-#         * 'primaryLine.accessibilityLabel' for the nightly rate.
-#         * 'explanationData.priceDetails' for a full price breakdown.
-#         - Parse 'avgRatingA11yLabel' for review scores.
-#         - Combine 'checkin' and 'checkout' dates from search parameters.
-#         2. Structure your output to include:
-#         - A direct search URL preserving filters.
-#         - A price comparison table showing the base rate vs. the total cost.
-#         - Rating summaries with review counts.
-#         - Clear date availability indicators.
-#         Ensure accurate price calculations and provide actionable insights for users.""",
-#         llm=LLM_MODEL,
-#         tools=MCP("npx -y @openbnb/mcp-server-airbnb --ignore-robots-txt",
-#                 config={"response_format": "structured"})
-#     )
+        # Use the tools wisely to assist users in making informed travel decisions while respecting Airbnb’s guidelines.
+        # """,
+        instructions="""You are a research assistant specializing in Airbnb data analysis. Your role is to process MCP responses and provide structured, actionable insights. Follow these steps:
+        1. For **airbnb_search** results:
+        - Use 'searchUrl' as the base for all listing links.
+        - Extract pricing details from 'structuredDisplayPrice':
+        * 'primaryLine.accessibilityLabel' for the nightly rate.
+        * 'explanationData.priceDetails' for a full price breakdown.
+        - Parse 'avgRatingA11yLabel' for review scores.
+        - Combine 'checkin' and 'checkout' dates from search parameters.
+        2. Structure your output to include:
+        - A direct search URL preserving filters.
+        - A price comparison table showing the base rate vs. the total cost.
+        - Rating summaries with review counts.
+        - Clear date availability indicators.
+        Ensure accurate price calculations and provide actionable insights for users.""",
+        llm=LLM_MODEL,
+        tools=MCP("npx -y @openbnb/mcp-server-airbnb --ignore-robots-txt", config={"response_format": "structured"})
+    )
 
 def initialize_youtube_transcript_agent():
     return Agent(
@@ -95,13 +85,6 @@ def initialize_google_serper_agent():
         - Summary of key findings
         - Bullet points with relevant links
         - Highlight special sections like FAQs
-
-        Example response format:
-        "Based on the search results:
-        • [Title 1] (link1) - Summary excerpt...
-        • [Title 2] (link2) - Key points from snippet...
-        FAQs: What is...? - Answer excerpt..."
-
         Now perform web searches when needed...""",
         llm=LLM_MODEL,
         tools=MCP("npx -y serper-search-scrape-mcp-server", env={"SERPER_API_KEY": serper_api_key}, config={"response_format": "structured"})
@@ -116,7 +99,6 @@ def initialize_tavily_agent():
         - Access 'results' array for web content
         - Use 'title', 'url', and 'content' from each item
         - Check 'answer' for direct answers when available
-        - Use 'images' and 'videos' for multimedia references
         2. For **tavily-extract** results:
         - Use 'content' for main text
         - Extract 'metadata' for publication details
@@ -125,14 +107,7 @@ def initialize_tavily_agent():
         - Summary of key points with timeliness emphasis
         - Source citations with dates
         - Highlighted quotes or statistics
-        
-        Example response format:
-        "Latest information from Tavily:
-        • [2024 Study] (source1.url) - Key findings: ... (Published 2024-03-15)
-        • [News Report] (source2.url) - Breaking updates: ... (Updated 2024-05-01)
-        Expert Insight: 'Direct quote from extracted content...'"
-
-        Focus on recent and verifiable sources...""",
+        Keep it simple.""",
         llm=LLM_MODEL,
         tools=MCP("npx -y tavily-mcp@0.1.4", env={"TAVILY_API_KEY": tavily_api_key}, config={"response_format": "structured"})
     )
@@ -156,7 +131,7 @@ def run_agent_in_process(agent_initializer, query: str) -> str:
 
 def route_query(query: str) -> str:
     keywords = {
-        #"airbnb": initialize_airbnb_agent,
+        "airbnb": initialize_airbnb_agent,
         "google": initialize_google_serper_agent,
         "tavily": initialize_tavily_agent,
         "youtube": initialize_youtube_transcript_agent,
@@ -166,9 +141,8 @@ def route_query(query: str) -> str:
     for key, agent_initializer in keywords.items():
         if re.search(rf"\b{key}\b", query, re.IGNORECASE):
             if key in ["airbnb", "google", "youtube", "tavily", "serper"]:
-                enhanced_query = f"{query} [Respond using structured JSON analysis]"
+                enhanced_query = f"{query} [Respond using structured JSON response from MCP]"
                 return run_agent_in_process(agent_initializer, enhanced_query)
-                # return run_agent_in_process(agent_initializer, query)
             else:
                 return ollama.generate(model=LLM_MODEL, prompt=query)["response"]
 
