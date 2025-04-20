@@ -26,6 +26,9 @@
 ## Run
 - Install node, npm, npx on your PC to run MCP server app on your local pc. 
 - pip install -r requirements.txt
+- To use Tavily and Serper, you must create .env file and add your APIs from Tavily and Serper.
+  - SERPER_API_KEY= xxxx
+  - TAVILY_API_KEY= xxxx
 - python -m streamlit run app.py
 
 ## MCP & Examples
